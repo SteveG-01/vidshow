@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequential Video Player</title>
+    <style>
+        /* Prevent FOUC by hiding content until loaded */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        body.loaded {
+            opacity: 1;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+        }
+        
+        video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            display: block;
+            background-color: #000;
+        }
+        
+        /* Completely hide any video controls */
+        video::-webkit-media-controls {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-panel {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-play-button {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-start-playback-button {
+            display: none !important;
+        }
+        
+        .controls {
+            display: none;
+        }
+        
+        .controls button {
+            background: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .controls button:hover {
+            background: #f0f0f0;
+        }
+        
+        .controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .video-info {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 10px;
+        }
+        
+        /* Hide loading when videos are ready */
+        .videos-ready .loading {
+            display: none;
+        }
+        
+        /* Smooth transitions between videos */
+        .video-transition {
+            transition: opacity 0.4s ease-in-out;
+        }
+        
+        .video-hidden {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+        }
+        
+        .video-active {
+            opacity: 1;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">Loading videos...</div>
+    
+    <div class="video-container">
+        <!-- Replace src attributes with your actual video files -->
+        <video id="video-0" class="video-transition video-active" preload="metadata">
+            <source src="https://visitpocatello.com/wp-content/uploads/2025/08/100acherbikes-VSV-web-ban-fall-2025.m4v" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-1" class="video-transition video-hidden" preload="metadata">
+            <source src="https://visitpocatello.com/wp-content/uploads/2025/08/100acherbikes-VSV-web-ban-fall-2025.m4v" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-2" class="video-transition video-hidden" preload="metadata">
+            <source src="https://visitpocatello.com/wp-content/uploads/2025/08/100acherbikes-VSV-web-ban-fall-2025.m4v" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-3" class="video-transition video-hidden" preload="metadata">
+            <source src="https://visitpocatello.com/wp-content/uploads/2025/08/100acherbikes-VSV-web-ban-fall-2025.m4v" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-4" class="video-transition video-hidden" preload="metadata">
+            <source src="https://visitpocatello.com/wp-content/uploads/2025/08/100acherbikes-VSV-web-ban-fall-2025.m4v" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-5" class="video-transition video-hidden" preload="metadata">
+            <source src="https://visitpocatello.com/wp-content/uploads/2025/08/100acherbikes-VSV-web-ban-fall-2025.m4v" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-6" class="video-transition video-hidden" preload="metadata">
+            <source src="https://visitpocatello.com/wp-content/uploads/2025/08/100acherbikes-VSV-web-ban-fall-2025.m4v" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-7" class="video-transition video-hidden" preload="metadata">
+            <source src="https://visitpocatello.com/wp-content/uploads/2025/08/100acherbikes-VSV-web-ban-fall-2025.m4v" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    
+    <div class="controls">
+        <button id="prev-btn">Previous</button>
+        <button id="play-pause-btn">Play</button>
+        <button id="next-btn">Next</button>
+        <div class="video-info">
+            <span id="current-video">1</span> / <span id="total-videos">8</span>
+        </div>
+    </div>
+
+    <script>
+        class SequentialVideoPlayer {
+            constructor() {
+                this.videos = [];
+                this.currentVideoIndex = 0;
+                this.isPlaying = false;
+                this.videosLoaded = 0;
+                this.totalVideos = 8;
+                
+                this.init();
+            }
+            
+            async init() {
+                // Get all video elements
+                for (let i = 0; i < this.totalVideos; i++) {
+                    this.videos.push(document.getElementById(`video-${i}`));
+                }
+                
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                // Wait for videos to load metadata
+                await this.waitForVideosToLoad();
+                
+                // Initialize UI
+                this.updateUI();
+                
+                // Auto-start the first video
+                this.startAutoPlay();
+                
+                // Remove loading screen and show content with smooth transition
+                document.body.classList.add('loaded');
+                document.body.classList.add('videos-ready');
+            }
+            
+            startAutoPlay() {
+                const firstVideo = this.videos[0];
+                if (firstVideo) {
+                    setTimeout(() => {
+                        firstVideo.play().catch(e => {
+                            // If autoplay is blocked, just show the video ready to play
+                            console.log('Autoplay blocked, manual play required');
+                        });
+                        this.isPlaying = true;
+                        this.updateUI();
+                    }, 500); // Small delay for smooth transition
+                }
+            }
+            
+            waitForVideosToLoad() {
+                return new Promise((resolve) => {
+                    this.videos.forEach((video, index) => {
+                        video.addEventListener('loadedmetadata', () => {
+                            this.videosLoaded++;
+                            if (this.videosLoaded === this.totalVideos) {
+                                resolve();
+                            }
+                        });
+                        
+                        video.addEventListener('error', () => {
+                            console.log(`Error loading video ${index}`);
+                            this.videosLoaded++;
+                            if (this.videosLoaded === this.totalVideos) {
+                                resolve();
+                            }
+                        });
+                        
+                        // Add ended event listener for auto-advance
+                        video.addEventListener('ended', () => {
+                            this.nextVideo();
+                        });
+                    });
+                    
+                    // Fallback timeout in case videos don't load
+                    setTimeout(() => {
+                        if (this.videosLoaded < this.totalVideos) {
+                            console.log('Video loading timeout, proceeding anyway');
+                            resolve();
+                        }
+                    }, 5000);
+                });
+            }
+            
+            setupEventListeners() {
+                // Control buttons
+                document.getElementById('prev-btn').addEventListener('click', () => this.previousVideo());
+                document.getElementById('next-btn').addEventListener('click', () => this.nextVideo());
+                document.getElementById('play-pause-btn').addEventListener('click', () => this.togglePlayPause());
+                
+                // Keyboard controls
+                document.addEventListener('keydown', (e) => {
+                    switch(e.key) {
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            this.previousVideo();
+                            break;
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            this.nextVideo();
+                            break;
+                        case ' ':
+                            e.preventDefault();
+                            this.togglePlayPause();
+                            break;
+                    }
+                });
+            }
+            
+            updateUI() {
+                // Update video counter
+                document.getElementById('current-video').textContent = this.currentVideoIndex + 1;
+                
+                // No buttons are disabled since we now have infinite looping
+                document.getElementById('play-pause-btn').textContent = this.isPlaying ? 'Pause' : 'Play';
+                
+                // Show/hide videos with smooth transitions
+                this.videos.forEach((video, index) => {
+                    if (index === this.currentVideoIndex) {
+                        video.classList.remove('video-hidden');
+                        video.classList.add('video-active');
+                    } else {
+                        video.classList.add('video-hidden');
+                        video.classList.remove('video-active');
+                        video.pause();
+                    }
+                });
+            }
+            
+            togglePlayPause() {
+                const currentVideo = this.videos[this.currentVideoIndex];
+                
+                if (this.isPlaying) {
+                    currentVideo.pause();
+                    this.isPlaying = false;
+                } else {
+                    currentVideo.play();
+                    this.isPlaying = true;
+                }
+                
+                this.updateUI();
+            }
+            
+            nextVideo() {
+                // Move to next video, or loop back to first video
+                this.currentVideoIndex = (this.currentVideoIndex + 1) % this.totalVideos;
+                this.updateUI();
+                
+                // Auto-play the next video
+                const nextVideo = this.videos[this.currentVideoIndex];
+                setTimeout(() => {
+                    nextVideo.play().catch(e => {
+                        // If autoplay fails, just show it ready to play
+                        this.isPlaying = false;
+                        this.updateUI();
+                    });
+                    this.isPlaying = true;
+                    this.updateUI();
+                }, 200);
+            }
+            
+            previousVideo() {
+                // Move to previous video, or loop to last video
+                this.currentVideoIndex = this.currentVideoIndex === 0 ? this.totalVideos - 1 : this.currentVideoIndex - 1;
+                this.updateUI();
+                
+                // Auto-play the previous video
+                const prevVideo = this.videos[this.currentVideoIndex];
+                setTimeout(() => {
+                    prevVideo.play().catch(e => {
+                        // If autoplay fails, just show it ready to play
+                        this.isPlaying = false;
+                        this.updateUI();
+                    });
+                    this.isPlaying = true;
+                    this.updateUI();
+                }, 200);
+            }
+        }
+        
+        // Initialize the video player when the page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new SequentialVideoPlayer();
+        });
+    </script>
+</body>
+</html>

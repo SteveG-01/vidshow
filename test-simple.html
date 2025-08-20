@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Video Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        
+        video {
+            width: 800px;
+            height: 450px;
+            background-color: #000;
+            border: 2px solid #fff;
+        }
+        
+        .debug {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Test</h1>
+    
+    <div class="debug">
+        <p>If you can see this text, CSS is working.</p>
+        <p>If you can see the white border below, the video element exists.</p>
+        <p>If the video shows, everything is working!</p>
+    </div>
+    
+    <video controls autoplay>
+        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div class="debug">
+        <p>Video should appear above this text.</p>
+    </div>
+    
+    <script>
+        console.log('Simple test page loaded');
+        const video = document.querySelector('video');
+        console.log('Video element:', video);
+        
+        video.addEventListener('loadstart', () => console.log('Video load started'));
+        video.addEventListener('loadedmetadata', () => console.log('Video metadata loaded'));
+        video.addEventListener('canplay', () => console.log('Video can play'));
+        video.addEventListener('error', (e) => console.log('Video error:', e));
+    </script>
+</body>
+</html>

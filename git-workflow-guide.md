@@ -314,3 +314,305 @@ git diff                     # See current changes
 git show HEAD               # See last commit
 git reflog                  # See all actions taken
 ```
+
+---
+
+## **🤝 Phase 7: Collaborative Workflow & Pull Requests**
+
+### **12. Working with Others' Code (Forking & Contributing)**
+
+**Step-by-step process to contribute to someone else's project:**
+
+#### **A. Fork and Clone a Repository**
+```bash
+# 1. Fork the repository on GitHub (click "Fork" button)
+
+# 2. Clone YOUR fork to your computer
+git clone https://github.com/YOUR-USERNAME/their-project-name.git
+cd their-project-name
+
+# 3. Add the original repository as "upstream" 
+git remote add upstream https://github.com/ORIGINAL-OWNER/their-project-name.git
+
+# 4. Verify your remotes
+git remote -v
+# Should show:
+# origin    https://github.com/YOUR-USERNAME/their-project-name.git (fetch)
+# origin    https://github.com/YOUR-USERNAME/their-project-name.git (push)
+# upstream  https://github.com/ORIGINAL-OWNER/their-project-name.git (fetch)
+# upstream  https://github.com/ORIGINAL-OWNER/their-project-name.git (push)
+```
+
+#### **B. Create Feature Branch for Your Changes**
+```bash
+# 1. Make sure you're on main and up-to-date
+git checkout main
+git pull upstream main
+
+# 2. Create a descriptive feature branch
+git checkout -b fix/improve-video-controls
+# or
+git checkout -b feature/add-mobile-support
+# or  
+git checkout -b docs/update-readme
+```
+
+#### **C. Make Your Changes**
+```bash
+# 1. Edit the files you need to change
+# ... make your improvements ...
+
+# 2. Test thoroughly!
+# ... test in browser, run any tests ...
+
+# 3. Commit with clear, descriptive messages
+git add .
+git commit -m "Fix: Improve video control visibility on mobile devices"
+
+# 4. Make more commits if needed
+git add .
+git commit -m "Add: Touch-friendly controls for tablet users"
+```
+
+#### **D. Push and Create Pull Request**
+```bash
+# 1. Push your feature branch to YOUR fork
+git push origin fix/improve-video-controls
+
+# 2. Go to GitHub and create Pull Request
+# - Navigate to the original repository
+# - Click "New Pull Request" 
+# - Select your branch
+# - Write clear title and description
+# - Submit the pull request
+```
+
+### **13. VS Code Source Control Integration**
+
+#### **Using VS Code's Built-in Git Features:**
+
+**Visual Interface:**
+- **Source Control Panel** (Ctrl+Shift+G): See all changes
+- **Changes Section**: Files you've modified
+- **Staged Changes**: Files ready to commit
+- **Git Graph Extensions**: Visual branch history
+
+**Common VS Code Git Actions:**
+```
+✅ Stage Changes: Click "+" next to file
+✅ Unstage Changes: Click "-" next to staged file  
+✅ Commit: Type message in box, press Ctrl+Enter
+✅ Push: Click "..." → Push
+✅ Pull: Click "..." → Pull  
+✅ Create Branch: Click branch name → Create new branch
+✅ Switch Branch: Click branch name → Select branch
+✅ View History: Install "Git History" extension
+```
+
+#### **VS Code Pull Request Workflow:**
+1. **Install GitHub Pull Requests Extension**
+2. **Authenticate with GitHub** 
+3. **Create pull requests directly from VS Code**
+4. **Review others' pull requests in editor**
+5. **Merge pull requests without leaving VS Code**
+
+### **14. Keeping Your Fork Updated**
+
+```bash
+# Regular maintenance to stay current with original project
+
+# 1. Fetch latest changes from original repo
+git fetch upstream
+
+# 2. Switch to your main branch
+git checkout main
+
+# 3. Merge upstream changes into your main
+git merge upstream/main
+
+# 4. Push updated main to your fork
+git push origin main
+
+# 5. Update your feature branches (optional)
+git checkout your-feature-branch
+git rebase main  # Apply your changes on top of latest main
+```
+
+### **15. Pull Request Best Practices**
+
+#### **Before Submitting:**
+```bash
+# ✅ Make sure your code works
+# ✅ Test thoroughly
+# ✅ Update documentation if needed
+# ✅ Follow the project's coding style
+# ✅ Make sure your branch is up-to-date
+
+# Update your branch with latest main:
+git checkout main
+git pull upstream main
+git checkout your-feature-branch
+git rebase main
+```
+
+#### **Writing Good Pull Requests:**
+
+**📝 Good PR Title Examples:**
+```
+✅ "Fix: Video controls not visible on iOS Safari"
+✅ "Feature: Add keyboard shortcuts for video navigation" 
+✅ "Docs: Update installation instructions for Windows"
+✅ "Performance: Reduce video loading time by 50%"
+```
+
+**📝 Good PR Description Template:**
+```markdown
+## What this PR does
+Brief description of changes made.
+
+## Why this change is needed  
+Explain the problem this solves.
+
+## How to test
+1. Step-by-step testing instructions
+2. What to look for
+3. Any special setup needed
+
+## Screenshots (if UI changes)
+Before/after images
+
+## Checklist
+- [ ] Code tested locally
+- [ ] Documentation updated
+- [ ] No breaking changes
+- [ ] Follows project style guide
+```
+
+### **16. Code Review & Collaboration**
+
+#### **Responding to Review Feedback:**
+```bash
+# When reviewers request changes:
+
+# 1. Make the requested changes
+# ... edit your files ...
+
+# 2. Commit the improvements
+git add .
+git commit -m "Address review feedback: Improve error handling"
+
+# 3. Push updates (automatically updates the PR)
+git push origin your-feature-branch
+```
+
+#### **After PR is Merged:**
+```bash
+# Clean up your local environment
+
+# 1. Switch back to main
+git checkout main
+
+# 2. Pull the updated main (includes your merged changes)
+git pull upstream main
+
+# 3. Push updated main to your fork
+git push origin main
+
+# 4. Delete your feature branch (it's merged now)
+git branch -d your-feature-branch
+git push origin --delete your-feature-branch
+```
+
+### **17. Contributing to Open Source**
+
+#### **Finding Projects to Contribute To:**
+- **"Good First Issue"** labels on GitHub
+- **"Help Wanted"** tags
+- **Documentation improvements**
+- **Bug fixes**
+- **Translation work**
+
+#### **Open Source Contribution Workflow:**
+```bash
+# 1. Find interesting project
+# 2. Read CONTRIBUTING.md file
+# 3. Look for "good first issue" labels
+# 4. Fork → Clone → Branch → Code → Test → PR
+# 5. Engage respectfully with maintainers
+# 6. Be patient with review process
+# 7. Learn from feedback
+```
+
+---
+
+## **🎯 Complete Collaborative Example**
+
+**Contributing to someone's video player project:**
+
+```bash
+# 1. Fork and setup
+git clone https://github.com/yourusername/awesome-video-player.git
+cd awesome-video-player
+git remote add upstream https://github.com/originalowner/awesome-video-player.git
+
+# 2. Create feature branch
+git checkout -b feature/add-fullscreen-button
+git pull upstream main
+
+# 3. Make improvements
+# ... edit HTML/CSS/JS files ...
+git add .
+git commit -m "Feature: Add fullscreen toggle button with keyboard shortcut"
+
+# 4. Test thoroughly
+# ... test in multiple browsers ...
+git add .
+git commit -m "Fix: Ensure fullscreen works in Safari"
+
+# 5. Push and create PR
+git push origin feature/add-fullscreen-button
+# Go to GitHub, create Pull Request with clear description
+
+# 6. Respond to feedback
+# ... make requested changes ...
+git add .
+git commit -m "Address review: Use standard fullscreen API"
+git push origin feature/add-fullscreen-button
+
+# 7. After merge, cleanup
+git checkout main
+git pull upstream main
+git push origin main
+git branch -d feature/add-fullscreen-button
+```
+
+---
+
+## **💡 VS Code + Git Pro Tips**
+
+### **Essential VS Code Extensions:**
+```
+✅ GitLens - Supercharges Git in VS Code
+✅ GitHub Pull Requests - PR management
+✅ Git Graph - Visual commit history  
+✅ Git History - File change timeline
+✅ GitHub Copilot - AI code assistance
+```
+
+### **VS Code Git Shortcuts:**
+```
+Ctrl+Shift+G     Open Source Control
+Ctrl+Shift+P     Command Palette → Git commands
+Ctrl+`           Terminal (for git commands)
+F1               Quick Git actions
+Alt+Left/Right   Navigate Git file changes
+```
+
+### **Workflow Integration:**
+1. **Use VS Code's integrated terminal** for Git commands
+2. **Use Source Control panel** for staging/committing
+3. **Use extensions** for advanced Git features
+4. **Use built-in diff viewer** to review changes
+5. **Use GitHub integration** for seamless PR workflow
+
+This collaborative workflow opens up the entire world of open source contribution and team development! 🚀

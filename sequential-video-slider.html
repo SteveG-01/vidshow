@@ -1,0 +1,444 @@
+<style>
+        /* Prevent FOUC by hiding content until loaded */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: none;
+            font-family: Arial, sans-serif;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+            overflow-x: hidden;
+        }
+        
+        body.loaded {
+            opacity: 1;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            z-index: 0;
+        }
+        
+        /* Mobile: No flexbox, direct positioning */
+        @media (max-width: 767px) {
+            .video-container {
+                display: block;
+            }
+        }
+        
+        /* Desktop: Use flexbox for centering cover mode */
+        @media (min-width: 768px) {
+            .video-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            display: block;
+            background-color: #F6DD62;
+            visibility: hidden;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+        
+        /* Mobile: Fill container completely */
+        @media (max-width: 767px) {
+            video {
+                object-fit: cover;
+                height: 100vh;
+                width: 100vw;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            video {
+                object-fit: cover;
+                height: 100vh;
+            }
+        }
+        
+        /* Completely hide any video controls */
+        video::-webkit-media-controls {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-panel {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-play-button {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-start-playback-button {
+            display: none !important;
+        }
+        
+        .controls {
+            display: none;
+        }
+        
+        .controls button {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .controls button:hover {
+            background: #f0f0f0;
+        }
+        
+        .controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .video-info {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 10px;
+        }
+        
+        /* Hide loading when videos are ready */
+        .videos-ready .loading {
+            display: none;
+        }
+        
+        /* Smooth transitions between videos - prevent flashes */
+        .video-transition {
+            transition: opacity 0.6s ease-in-out;
+            will-change: opacity;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        
+        .video-hidden {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .video-active {
+            opacity: 1;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Prevent flash during video loading */
+        .video-container {
+            background-color: #000;
+            overflow: hidden;
+        }
+        
+        /* Show videos when ready */
+        .videos-ready video {
+            visibility: visible;
+        }
+    </style>
+
+<body>
+    <div class="loading">Loading videos...</div>
+    
+    <div class="video-container">
+        <!-- Replace src attributes with your actual video files -->
+        <video id="video-0" class="video-transition video-active" preload="metadata" autoplay muted>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-100acherbikes.mp4" type="video/mp4"/>
+            Your browser does not support the video tags.
+        </video>
+        
+        <video id="video-1" class="video-transition video-hidden" preload="metadata" muted>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-caughtone.mp4" type="video/mp4"/>
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-2" class="video-transition video-hidden" preload="metadata" muted>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-firesac.mp4" type="video/mp4"/>
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-3" class="video-transition video-hidden" preload="metadata" muted>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-golfyack.mp4" type="video/mp4"/>
+            Your browser does not support the video tagses.
+        </video>
+        
+        <video id="video-4" class="video-transition video-hidden" preload="metadata" muted>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-hockeyHatr.mp4" type="video/mp4"/>
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-5" class="video-transition video-hidden" preload="metadata" muted>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-panakayak.mp4" type="video/mp4"/>
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-6" class="video-transition video-hidden" preload="metadata" muted>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-raftwtryack.mp4" type="video/mp4"/>
+            Your browser does not support the video tag.
+        </video>
+        
+        <video id="video-7" class="video-transition video-hidden" preload="metadata" muted>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-roideoRapids.mp4" type="video/mp4"/>
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    
+    <div class="controls">
+        <button id="prev-btn">Previous</button>
+        <button id="play-pause-btn">Play</button>
+        <button id="next-btn">Next</button>
+        <div class="video-info">
+            <span id="current-video">1</span> / <span id="total-videos">8</span>
+        </div>
+    </div>
+
+    <script>
+        class SequentialVideoPlayer {
+            constructor() {
+                this.videos = [];
+                this.currentVideoIndex = 0;
+                this.isPlaying = false;
+                this.videosLoaded = 0;
+                this.totalVideos = 8;
+                
+                this.init();
+            }
+            
+            async init() {
+                // Get all video elements
+                for (let i = 0; i < this.totalVideos; i++) {
+                    this.videos.push(document.getElementById(`video-${i}`));
+                }
+                
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                // Wait for videos to load metadata
+                await this.waitForVideosToLoad();
+                
+                // Initialize UI
+                this.updateUI();
+                
+                // Auto-start the first video
+                this.startAutoPlay();
+                
+                // Ensure content is shown (in case not triggered earlier)
+                if (!document.body.classList.contains('loaded')) {
+                    document.body.classList.add('loaded');
+                    document.body.classList.add('videos-ready');
+                }
+            }
+            
+            startAutoPlay() {
+                const firstVideo = this.videos[0];
+                if (firstVideo) {
+                    firstVideo.currentTime = 0;
+                    console.log(`Starting first video (duration: ${firstVideo.duration} seconds)`);
+                    firstVideo.play().then(() => {
+                        this.isPlaying = true;
+                        console.log(`First video started playing - will play until ${firstVideo.duration} seconds`);
+                    }).catch(e => {
+                        console.log('Autoplay blocked:', e);
+                        this.isPlaying = false;
+                    });
+                }
+            }
+            
+            waitForVideosToLoad() {
+                return new Promise((resolve) => {
+                    let firstVideoLoaded = false;
+                    
+                    this.videos.forEach((video, index) => {
+                        video.addEventListener('loadedmetadata', () => {
+                            this.videosLoaded++;
+                            
+                            // Show content as soon as first video loads to prevent FOUC
+                            if (index === 0 && !firstVideoLoaded) {
+                                firstVideoLoaded = true;
+                                setTimeout(() => {
+                                    document.body.classList.add('loaded');
+                                    document.body.classList.add('videos-ready');
+                                }, 100);
+                            }
+                            
+                            if (this.videosLoaded === this.totalVideos) {
+                                resolve();
+                            }
+                        });
+                        
+                        video.addEventListener('error', () => {
+                            console.log(`Error loading video ${index}`);
+                            this.videosLoaded++;
+                            
+                            // Show content even on first video error to prevent indefinite FOUC
+                            if (index === 0 && !firstVideoLoaded) {
+                                firstVideoLoaded = true;
+                                setTimeout(() => {
+                                    document.body.classList.add('loaded');
+                                    document.body.classList.add('videos-ready');
+                                }, 100);
+                            }
+                            
+                            if (this.videosLoaded === this.totalVideos) {
+                                resolve();
+                            }
+                        });
+                        
+                        // Add comprehensive debugging for video playback
+                        video.addEventListener('loadstart', () => {
+                            console.log(`Video ${index}: Started loading`);
+                        });
+                        
+                        video.addEventListener('canplay', () => {
+                            console.log(`Video ${index}: Can start playing (duration: ${video.duration}s)`);
+                        });
+                        
+                        video.addEventListener('play', () => {
+                            console.log(`Video ${index}: Started playing`);
+                        });
+                        
+                        video.addEventListener('pause', () => {
+                            console.log(`Video ${index}: Paused at ${video.currentTime}s of ${video.duration}s`);
+                        });
+                        
+                        video.addEventListener('timeupdate', () => {
+                            // Only log for active video to avoid spam
+                            if (index === this.currentVideoIndex) {
+                                const progress = ((video.currentTime / video.duration) * 100).toFixed(1);
+                                if (video.currentTime % 2 < 0.1) { // Log every ~2 seconds
+                                    console.log(`Video ${index}: ${video.currentTime.toFixed(1)}s / ${video.duration}s (${progress}%)`);
+                                }
+                            }
+                        });
+                        
+                        video.addEventListener('waiting', () => {
+                            console.log(`Video ${index}: Waiting for data (buffering)`);
+                        });
+                        
+                        video.addEventListener('stalled', () => {
+                            console.log(`Video ${index}: Stalled - network issue`);
+                        });
+                        
+                        video.addEventListener('ended', () => {
+                            console.log(`Video ${index}: ENDED event fired at ${video.currentTime}s of ${video.duration}s`);
+                            // Only advance if this is the currently active video
+                            if (index === this.currentVideoIndex) {
+                                console.log(`Active video ${index} ended naturally, advancing to next`);
+                                this.nextVideo();
+                            } else {
+                                console.log(`Inactive video ${index} ended - ignoring`);
+                            }
+                        });
+                        
+                        video.addEventListener('error', (e) => {
+                            console.log(`Video ${index}: ERROR - ${e.target.error?.message || 'Unknown error'}`);
+                        });
+                    });
+                    
+                    // Fallback timeout in case videos don't load (reduced to 1 second)
+                    setTimeout(() => {
+                        if (this.videosLoaded < this.totalVideos) {
+                            console.log('Video loading timeout, proceeding anyway');
+                            if (!firstVideoLoaded) {
+                                document.body.classList.add('loaded');
+                                document.body.classList.add('videos-ready');
+                            }
+                            resolve();
+                        }
+                    }, 1000);
+                });
+            }
+            
+            setupEventListeners() {
+                // No manual controls - videos advance only when they naturally end
+                // This ensures each video plays completely from start to finish
+            }
+            
+            updateUI() {
+                // Show/hide videos with smooth transitions - prevent flashes
+                this.videos.forEach((video, index) => {
+                    if (index === this.currentVideoIndex) {
+                        video.classList.remove('video-hidden');
+                        video.classList.add('video-active');
+                    } else {
+                        video.classList.add('video-hidden');
+                        video.classList.remove('video-active');
+                        // Pause non-active videos after transition
+                        setTimeout(() => {
+                            if (index !== this.currentVideoIndex) {
+                                video.pause();
+                            }
+                        }, 600); // Match transition duration
+                    }
+                });
+            }
+            
+            nextVideo() {
+                // This method should only be called when the ACTIVE video naturally ends
+                console.log(`NextVideo called - transitioning from video ${this.currentVideoIndex}`);
+                
+                const currentVideo = this.videos[this.currentVideoIndex];
+                
+                // Stop and reset current video
+                currentVideo.pause();
+                currentVideo.currentTime = 0;
+                
+                // Move to next video, or loop back to first video
+                const oldIndex = this.currentVideoIndex;
+                this.currentVideoIndex = (this.currentVideoIndex + 1) % this.totalVideos;
+                const nextVideo = this.videos[this.currentVideoIndex];
+                
+                console.log(`Transitioning from video ${oldIndex} to video ${this.currentVideoIndex}`);
+                
+                // Prepare and start next video immediately
+                nextVideo.currentTime = 0;
+                this.updateUI();
+                
+                // Start next video
+                nextVideo.play().then(() => {
+                    this.isPlaying = true;
+                    console.log(`Video ${this.currentVideoIndex} started playing successfully`);
+                }).catch(e => {
+                    console.log(`Autoplay failed for video ${this.currentVideoIndex}:`, e);
+                    this.isPlaying = false;
+                });
+            }
+            
+
+        }
+        
+        // Initialize the video player when the page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new SequentialVideoPlayer();
+        });
+    </script>
+</body>

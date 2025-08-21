@@ -145,7 +145,7 @@
         </video>
         
         <video id="video-4" class="video-transition video-hidden" preload="metadata" muted loop>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-hockeyHatr.mp4v" type="video/mp4">
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-hockeyHatr.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         
@@ -204,9 +204,11 @@
                 // Auto-start the first video
                 this.startAutoPlay();
                 
-                // Remove loading screen and show content with smooth transition
-                document.body.classList.add('loaded');
-                document.body.classList.add('videos-ready');
+                // Ensure content is shown (in case not triggered earlier)
+                if (!document.body.classList.contains('loaded')) {
+                    document.body.classList.add('loaded');
+                    document.body.classList.add('videos-ready');
+                }
             }
             
             startAutoPlay() {
@@ -225,9 +227,21 @@
             
             waitForVideosToLoad() {
                 return new Promise((resolve) => {
+                    let firstVideoLoaded = false;
+                    
                     this.videos.forEach((video, index) => {
                         video.addEventListener('loadedmetadata', () => {
                             this.videosLoaded++;
+                            
+                            // Show content as soon as first video loads to prevent FOUC
+                            if (index === 0 && !firstVideoLoaded) {
+                                firstVideoLoaded = true;
+                                setTimeout(() => {
+                                    document.body.classList.add('loaded');
+                                    document.body.classList.add('videos-ready');
+                                }, 100);
+                            }
+                            
                             if (this.videosLoaded === this.totalVideos) {
                                 resolve();
                             }
@@ -236,6 +250,16 @@
                         video.addEventListener('error', () => {
                             console.log(`Error loading video ${index}`);
                             this.videosLoaded++;
+                            
+                            // Show content even on first video error to prevent indefinite FOUC
+                            if (index === 0 && !firstVideoLoaded) {
+                                firstVideoLoaded = true;
+                                setTimeout(() => {
+                                    document.body.classList.add('loaded');
+                                    document.body.classList.add('videos-ready');
+                                }, 100);
+                            }
+                            
                             if (this.videosLoaded === this.totalVideos) {
                                 resolve();
                             }
@@ -247,13 +271,17 @@
                         });
                     });
                     
-                    // Fallback timeout in case videos don't load
+                    // Fallback timeout in case videos don't load (reduced to 1 second)
                     setTimeout(() => {
                         if (this.videosLoaded < this.totalVideos) {
                             console.log('Video loading timeout, proceeding anyway');
+                            if (!firstVideoLoaded) {
+                                document.body.classList.add('loaded');
+                                document.body.classList.add('videos-ready');
+                            }
                             resolve();
                         }
-                    }, 5000);
+                    }, 1000);
                 });
             }
             

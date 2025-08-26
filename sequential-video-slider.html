@@ -13,10 +13,51 @@
         body.loaded {
             opacity: 1;
         }
+        /* Desktop */
+
+        /* Adjust the height here as needed: 100svh, 70svh, 600px, etc. */
+.svs { --svs-height: 70svh; }
+
+/* Remove Elementor’s default padding around the HTML widget */
+.svs > .elementor-widget-container { padding: 0 !important; }
+
+/* Full-bleed horizontally, contained to the widget */
+.svs .video-container {
+  position: relative;
+  left: 0%;
+  right: 0%;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+  height: var(--svs-height);  /* change this value to adjust vertical size */
+  max-height: 100svh;         /* don’t exceed viewport height unless you want to */
+  overflow: hidden;
+  background: #000;
+  margin-top:-40px;
+  margin-bottom:-40px;
+}
+
+
+/* Scale video to fill the box */
+.svs .video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Keep the loading overlay inside the widget, not the whole page */
+.svs .loading {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
         
         .video-container {
             position: relative;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             background-color: #000;
             margin: 0;
@@ -126,6 +167,7 @@
             border-radius: 10px;
         }
         
+        
         /* Hide loading when videos are ready */
         .videos-ready .loading {
             display: none;
@@ -164,7 +206,35 @@
         .videos-ready video {
             visibility: visible;
         }
-    </style>
+        /* Mobile: edge-to-edge horizontally, height follows the video */
+@media (max-width: 767px) {
+  .svs .video-container {
+    /* keep full-bleed horizontally */
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw;
+
+    /* let height grow with the video */
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible; /* optional: allow natural growth */
+  }
+
+  .svs .video-container video {
+    width: 100%;         /* fill screen width */
+    height: auto !important;  /* keep aspect ratio; push content below */
+    object-fit: contain !important; /* show the entire video, no crop */
+    display: block;
+
+    /* optional: prevent layout shift before metadata loads */
+    aspect-ratio: 16 / 9; /* change if your clips are a different ratio */
+  }
+
+  /* keep the loader inside the widget on mobile */
+  .svs .loading { position: absolute !important; }
+}
+
+    </style> 
 
 <body>
     <div class="loading">Loading videos...</div>
@@ -172,44 +242,40 @@
     <div class="video-container">
         <!-- Replace src attributes with your actual video files -->
         <video id="video-0" class="video-transition video-active" preload="metadata" autoplay muted>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-100acherbikes.mp4" type="video/mp4"/>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/1-ATV-Horse.mp4" type="video/mp4"/>
             Your browser does not support the video tags.
         </video>
         
         <video id="video-1" class="video-transition video-hidden" preload="metadata" muted>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-caughtone.mp4" type="video/mp4"/>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/2-river-food-ATV.mp4" type="video/mp4"/>
             Your browser does not support the video tag.
         </video>
         
         <video id="video-2" class="video-transition video-hidden" preload="metadata" muted>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-firesac.mp4" type="video/mp4"/>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/3-river-bed.mp4" type="video/mp4"/>
             Your browser does not support the video tag.
         </video>
         
         <video id="video-3" class="video-transition video-hidden" preload="metadata" muted>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-golfyack.mp4" type="video/mp4"/>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/4-fat-tires.mp4" type="video/mp4"/>
             Your browser does not support the video tagses.
         </video>
         
         <video id="video-4" class="video-transition video-hidden" preload="metadata" muted>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-hockeyHatr.mp4" type="video/mp4"/>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/5-fishbike.mp4" type="video/mp4"/>
             Your browser does not support the video tag.
         </video>
         
         <video id="video-5" class="video-transition video-hidden" preload="metadata" muted>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-panakayak.mp4" type="video/mp4"/>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/6-Sac-Horse.mp4" type="video/mp4"/>
             Your browser does not support the video tag.
         </video>
         
         <video id="video-6" class="video-transition video-hidden" preload="metadata" muted>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-raftwtryack.mp4" type="video/mp4"/>
+            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/7-fish-Raft.mp4" type="video/mp4"/>
             Your browser does not support the video tag.
         </video>
-        
-        <video id="video-7" class="video-transition video-hidden" preload="metadata" muted>
-            <source src="https://www.visitsalmonvalley.com/wp-content/uploads/2025/08/salmon-roideoRapids.mp4" type="video/mp4"/>
-            Your browser does not support the video tag.
-        </video>
+
     </div>
     
     <div class="controls">
@@ -220,6 +286,7 @@
             <span id="current-video">1</span> / <span id="total-videos">8</span>
         </div>
     </div>
+    </body>
 
     <script>
         class SequentialVideoPlayer {
@@ -228,7 +295,7 @@
                 this.currentVideoIndex = 0;
                 this.isPlaying = false;
                 this.videosLoaded = 0;
-                this.totalVideos = 8;
+                this.totalVideos = 7;
                 
                 this.init();
             }
@@ -374,7 +441,7 @@
                             }
                             resolve();
                         }
-                    }, 1000);
+                    }, 55);
                 });
             }
             
@@ -397,7 +464,7 @@
                             if (index !== this.currentVideoIndex) {
                                 video.pause();
                             }
-                        }, 600); // Match transition duration
+                        }, 55); // Match transition duration
                     }
                 });
             }
@@ -441,4 +508,3 @@
             new SequentialVideoPlayer();
         });
     </script>
-</body>

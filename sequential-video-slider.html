@@ -175,7 +175,7 @@
         
         /* Smooth transitions between videos - prevent flashes */
         .video-transition {
-            transition: opacity 0.6s ease-in-out;
+            transition: opacity 0.05s ease-in-out; /* short fade */
             will-change: opacity;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
@@ -459,12 +459,10 @@
                     } else {
                         video.classList.add('video-hidden');
                         video.classList.remove('video-active');
-                        // Pause non-active videos after transition
-                        setTimeout(() => {
-                            if (index !== this.currentVideoIndex) {
-                                video.pause();
-                            }
-                        }, 55); // Match transition duration
+                        // Pause shortly after fade completes to avoid popping audio/frames
+                        if (index !== this.currentVideoIndex) {
+                            setTimeout(() => video.pause(), 200); // ~transition length
+                        }
                     }
                 });
             }
@@ -475,9 +473,8 @@
                 
                 const currentVideo = this.videos[this.currentVideoIndex];
                 
-                // Stop and reset current video
+                // Stop current video; do not reset time yet to avoid first-frame flash
                 currentVideo.pause();
-                currentVideo.currentTime = 0;
                 
                 // Move to next video, or loop back to first video
                 const oldIndex = this.currentVideoIndex;
@@ -486,14 +483,22 @@
                 
                 console.log(`Transitioning from video ${oldIndex} to video ${this.currentVideoIndex}`);
                 
-                // Prepare and start next video immediately
+                // Prepare next video at t=0
                 nextVideo.currentTime = 0;
+
+                // Make next visible and current hidden immediately (hard cut)
                 this.updateUI();
-                
-                // Start next video
+
+                // Start next video and only then reset the old one (prevents flash)
                 nextVideo.play().then(() => {
                     this.isPlaying = true;
                     console.log(`Video ${this.currentVideoIndex} started playing successfully`);
+
+                    // Now that next is definitely playing, reset the old video while hidden
+                    const oldVideo = this.videos[oldIndex];
+                    if (oldIndex !== this.currentVideoIndex) {
+                        oldVideo.currentTime = 0;
+                    }
                 }).catch(e => {
                     console.log(`Autoplay failed for video ${this.currentVideoIndex}:`, e);
                     this.isPlaying = false;
